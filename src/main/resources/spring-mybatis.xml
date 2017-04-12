@@ -43,6 +43,7 @@ http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+	<!-- Declarative Transaction Management声明式容器事务管理 ,transaction-manager指定事务管理器为transactionManager- -->
 	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
 			<tx:method name="add*" propagation="REQUIRED" />
@@ -67,6 +68,7 @@ http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		</tx:attributes>
 	</tx:advice>
 	<aop:config>
+		<!-- Use transaction in the service package with the above transaction method. E.g. to handle the commit and roll-back of the transaction -->
 		<aop:pointcut id="transactionPointcut" expression="execution(* com.likypan.mybatis.service..*Impl.*(..))" />
 		<aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice" />
 	</aop:config>
