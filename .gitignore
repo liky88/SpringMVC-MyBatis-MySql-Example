@@ -1,0 +1,16 @@
+# Operating System Files
+*.DS_Store
+Thumbs.db
+
+# Build Files #
+**/target/
+**/bin/
+
+
+# Eclipse Project Files #
+**/.classpath
+**/.project
+**/.settings/
+
+
+.mvn
