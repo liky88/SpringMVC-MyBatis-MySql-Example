@@ -31,19 +31,31 @@ http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		<property name="filters" value="mergeStat" />
 	</bean>
 
+	<!-- Used to create the session factory. then use the session to map with mapper xml file or commit or roll-back.-->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
+		<!-- mapperLocation property: is used to locate the mybatis's mapper xml file -->
 		<property name="mapperLocations" value="classpath:com/likypan/mybatis/mapping/*.xml" />
 	</bean>
+	
+	<!-- Configure the datasource for the mapper, therefore no need to write the concrete class the the interface -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- Here the basePackage is used to define the mapper class(interface) -->
 		<property name="basePackage" value="com.likypan.mybatis.dao" />
+		<!-- If there is only one data source, no need to declare the sql session factory.
+		     If there is more than one data source, you need to use the sqlSessionFactoryBeanName
+		     to configure sql session factory. Otherwise, it will fail-->
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
 	</bean>
 
+	<!-- Configure the transaction manager by using spring with injecting the customized data source  -->
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	<!-- Declarative Transaction Management声明式容器事务管理 ,transaction-manager指定事务管理器为transactionManager- -->
+	
+	<!-- 基于声明式的事务管理:1.xml配置方式,2.注解模式@Transactional -->
+	<!-- 1.声明式事务xml配置：
+		 a.配置事务切面。 -->
 	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
 			<tx:method name="add*" propagation="REQUIRED" />
@@ -67,10 +79,15 @@ http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 			<tx:method name="*" propagation="SUPPORTS" />
 		</tx:attributes>
 	</tx:advice>
+	<!-- 1.声明式事务xml配置：
+		 b.配置AOP。 -->
 	<aop:config>
 		<!-- Use transaction in the service package with the above transaction method. E.g. to handle the commit and roll-back of the transaction -->
 		<aop:pointcut id="transactionPointcut" expression="execution(* com.likypan.mybatis.service..*Impl.*(..))" />
 		<aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice" />
 	</aop:config>
-
+	
+	<!-- 2.声明式事务注解@Transactional配置： -->
+	<!-- 开启事务控制的注解支持  -->
+    <!-- <tx:annotation-driven transaction-manager="transactionManager"/> -->
 </beans>
