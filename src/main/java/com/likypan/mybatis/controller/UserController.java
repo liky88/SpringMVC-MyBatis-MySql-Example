@@ -1,5 +1,7 @@
 package com.likypan.mybatis.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +20,7 @@ public class UserController {
 	
 	@RequestMapping(value = "/user",method = RequestMethod.GET)
 	@ResponseBody
-	public User getUserByUsername(@RequestParam String username){
+	public User getUserByUsername(@RequestParam String username,HttpServletRequest request){
 		return userService.getUserByUsername(username);
 	}
 }
